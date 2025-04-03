@@ -3,23 +3,18 @@ function getColorSuggestions() {
     const file = imageInput.files[0];
 
     if (!file) {
-        document.getElementById("result").innerHTML = "Please upload an image.";
+        document.getElementById("result").innerHTML = "Please select an image file.";
         return;
     }
 
     const formData = new FormData();
-    formData.append("image", file);
+    formData.append("image", file);  // API should expect "image" as the key
 
     fetch("https://color-suggestion-api.onrender.com/suggest-colors", {
         method: "POST",
-        body: formData, // Send the file as FormData
+        body: formData,  // Send as FormData, NOT JSON
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error("HTTP error " + response.status);
-        }
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
         document.getElementById("result").innerHTML = "Suggested Colors: " + JSON.stringify(data);
     })
