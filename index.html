@@ -1,0 +1,33 @@
+document.getElementById("getColor").addEventListener("click", function () { 
+    const imageUrl = document.getElementById("imageUrl").value;
+    
+    console.log("Image URL:", imageUrl); // Debugging
+
+    if (!imageUrl) {
+        document.getElementById("result").innerHTML = "Please enter an image URL.";
+        return;
+    }
+
+    fetch("https://color-suggestion-api.onrender.com/suggest-colors", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ image_url: imageUrl }),
+    })
+    .then(response => response.text()) // TEMPORARY CHANGE TO TEXT()
+    .then(text => { 
+        console.log("API Response:", text); // Debugging
+        try {
+            const data = JSON.parse(text); // Convert back to JSON
+            document.getElementById("result").innerHTML = "Suggested Colors: " + JSON.stringify(data);
+        } catch (error) {
+            document.getElementById("result").innerHTML = "Error parsing response. Check console.";
+            console.error("Parsing Error:", error);
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        document.getElementById("result").innerHTML = "Error fetching color suggestions: " + error.message;
+    });
+});
