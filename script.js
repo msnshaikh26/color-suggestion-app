@@ -1,31 +1,30 @@
-async function getColorSuggestions() {
-    const imageInput = document.getElementById("imageInput").files[0];
+function getColorSuggestions() {
+    const imageInput = document.getElementById("imageInput");
+    const file = imageInput.files[0];
 
-    if (!imageInput) {
-        alert("Please select an image first.");
+    if (!file) {
+        document.getElementById("result").innerHTML = "Please upload an image.";
         return;
     }
 
     const formData = new FormData();
-    formData.append("image", imageInput);
+    formData.append("image", file);
 
-    const apiUrl = "https://color-suggestion-api.onrender.com/suggest-colors";
-
-    try {
-        const response = await fetch(apiUrl, {
-            method: "POST",
-            body: formData
-        });
-
+    fetch("https://color-suggestion-api.onrender.com/suggest-colors", {
+        method: "POST",
+        body: formData, // Send the file as FormData
+    })
+    .then(response => {
         if (!response.ok) {
-            throw new Error(`Error: ${response.statusText}`);
+            throw new Error("HTTP error " + response.status);
         }
-
-        const data = await response.json();
-        document.getElementById("result").innerHTML = 
-            `<strong>Suggested Colors:</strong> ${data.colors.join(", ")}`;
-    } catch (error) {
-        console.error(error);
-        alert("Error fetching color suggestions.");
-    }
+        return response.json();
+    })
+    .then(data => {
+        document.getElementById("result").innerHTML = "Suggested Colors: " + JSON.stringify(data);
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        document.getElementById("result").innerHTML = "Error fetching color suggestions: " + error.message;
+    });
 }
