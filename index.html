@@ -1,33 +1,22 @@
-document.getElementById("getColor").addEventListener("click", function () { 
-    const imageUrl = document.getElementById("imageUrl").value;
-    
-    console.log("Image URL:", imageUrl); // Debugging
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Suggestion App</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+        input, button { margin: 10px; padding: 10px; font-size: 16px; }
+        #result { margin-top: 20px; font-size: 18px; }
+    </style>
+</head>
+<body>
+    <h1>Background Color Suggestion</h1>
+    <input type="file" id="imageInput" accept="image/*">
+    <button onclick="getColorSuggestions()">Get Colors</button>
+    <div id="result"></div>
 
-    if (!imageUrl) {
-        document.getElementById("result").innerHTML = "Please enter an image URL.";
-        return;
-    }
-
-    fetch("https://color-suggestion-api.onrender.com/suggest-colors", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ image_url: imageUrl }),
-    })
-    .then(response => response.text()) // TEMPORARY CHANGE TO TEXT()
-    .then(text => { 
-        console.log("API Response:", text); // Debugging
-        try {
-            const data = JSON.parse(text); // Convert back to JSON
-            document.getElementById("result").innerHTML = "Suggested Colors: " + JSON.stringify(data);
-        } catch (error) {
-            document.getElementById("result").innerHTML = "Error parsing response. Check console.";
-            console.error("Parsing Error:", error);
-        }
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        document.getElementById("result").innerHTML = "Error fetching color suggestions: " + error.message;
-    });
-});
+    <script src="script.js"></script>
+</body>
+</html>
